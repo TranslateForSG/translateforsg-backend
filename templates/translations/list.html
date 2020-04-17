@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table class="table is-striped">
+        <thead>
+        <tr>
+            <td>Summary</td>
+            <td>Content</td>
+            {% for language in languages %}
+                <td>{{ language }}</td>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for phrase in phrases %}
+            <tr>
+                <td>{{ phrase.phrase }}</td>
+                <td>{{ phrase.content }}</td>
+                {% for language in languages %}
+                    <td>{{ phrase.translations }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
