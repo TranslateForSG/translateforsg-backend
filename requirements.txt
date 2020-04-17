@@ -3,4 +3,6 @@ Django==3.0.5
 django-reversion==3.0.7
 pytz==2019.3
 sqlparse==0.3.1
-django-filter-2.2.0
+django-filter==2.2.0
+django-storages-1.9.1
+djangorestframework==3.11.0

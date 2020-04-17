@@ -41,6 +41,7 @@ class Translation(models.Model):
 
     language = models.ForeignKey('Language', on_delete=models.CASCADE)
     content = models.TextField()
+    audio_clip = models.FileField(blank=True)
     special_note = models.TextField(verbose_name='Special note to doctor (if needed)', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

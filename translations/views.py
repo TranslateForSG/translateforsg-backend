@@ -10,7 +10,7 @@ class TranslationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Translation
-        fields = ['language', 'category', 'content', 'special_note']
+        fields = ['language', 'category', 'content', 'special_note', 'audio_clip']
 
 
 class PhraseSerializer(serializers.ModelSerializer):
