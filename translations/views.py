@@ -27,5 +27,5 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class VolunteerViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = VolunteerSerializer
-    queryset = Volunteer.objects.all().order_by('?')  # make sure to randomly order
+    queryset = Volunteer.get_available_volunteers().order_by('?')  # make sure to randomly order
     pagination_class = PerPage100

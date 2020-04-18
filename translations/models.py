@@ -2,6 +2,9 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.db import models
+from django.utils.datetime_safe import datetime
+
+from translations.consts import DAYS_OF_WEEK, ETHNICITY_LIST
 
 
 class Language(models.Model):
@@ -68,6 +71,8 @@ class Volunteer(models.Model):
     language = models.ForeignKey('Language', on_delete=models.PROTECT)
     phone_number = models.CharField(max_length=20)
     availability = models.NullBooleanField()
+    availability_slots = models.ManyToManyField('AvailabilitySlot', blank=True)
+    ethnicity = models.CharField(max_length=15, choices=[(e, e) for e in ETHNICITY_LIST], default='Bangladeshi')
 
     notes = models.TextField(blank=True)
 
@@ -76,3 +81,23 @@ class Volunteer(models.Model):
 
     def __str__(self):
         return self.display_name
+
+    @staticmethod
+    def get_available_volunteers(time: datetime = None):
+
+        if time is None:
+            time = datetime.now()
+
+        return Volunteer.objects.filter(availability_slots__day=time.strftime('%A'),
+                                        availability_slots__start_time__lt=time.time(),
+                                        availability_slots__end_time__gt=time.time())
+
+
+class AvailabilitySlot(models.Model):
+    day = models.CharField(max_length=10, choices=[(d, d) for d in DAYS_OF_WEEK])
+
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self):
+        return f'{self.day} ({self.start_time} - {self.end_time})'

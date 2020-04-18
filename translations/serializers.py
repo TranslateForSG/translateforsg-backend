@@ -38,4 +38,4 @@ class VolunteerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Volunteer
-        fields = ['display_name', 'language', 'phone_number', 'availability', 'notes']
+        fields = ['display_name', 'language', 'phone_number', 'availability', 'ethnicity', 'notes']
