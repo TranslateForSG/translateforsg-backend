@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Language, Category, Phrase, Translation
+from .models import Language, Category, Phrase, Translation, Volunteer
 
 
 @admin.register(Language)
@@ -18,7 +18,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class TranslationInlineAdmin(admin.StackedInline):
     model = Translation
-    fields = ['language', 'content', 'special_note']
+    fields = ['language', 'content', 'special_note', 'audio_clip']
     extra = 0
 
 
@@ -27,3 +27,11 @@ class PhraseAdmin(VersionAdmin):
     list_display = ['summary', 'category', 'updated_at']
     search_fields = ['summary', 'content']
     inlines = [TranslationInlineAdmin]
+
+
+@admin.register(Volunteer)
+class VolunteerAdmin(VersionAdmin):
+    list_display = ['display_name', 'language', 'availability']
+    search_fields = ['display_name']
+    list_filter = ['availability', 'language']
+    exclude = ['uuid']

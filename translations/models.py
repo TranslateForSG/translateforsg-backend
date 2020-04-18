@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.conf import settings
 from django.db import models
 
@@ -19,6 +21,9 @@ class Category(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.name
@@ -52,3 +57,22 @@ class Translation(models.Model):
 
     class Meta:
         unique_together = ('language', 'phrase')
+
+
+class Volunteer(models.Model):
+    uuid = models.UUIDField(unique=True, db_index=True, default=uuid4)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    display_name = models.CharField(max_length=50)
+
+    language = models.ForeignKey('Language', on_delete=models.PROTECT)
+    phone_number = models.CharField(max_length=20)
+    availability = models.NullBooleanField()
+
+    notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.display_name
