@@ -1,0 +1,16 @@
+# [START django_app]
+runtime: python37
+
+env_variables:
+  SECRET_KEY:
+  DEBUG:
+  GOOGLE_APPLICATION_CREDENTIALS:
+  DATABASE_HOST: ''
+  DATABASE_USER: ''
+  DATABASE_NAME: ''
+  DATABASE_PASSWORD: ''
+
+handlers:
+- url: /.*
+  script: auto
+# [END django_app]

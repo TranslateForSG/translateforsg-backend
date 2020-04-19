@@ -33,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['api.translatefor.sg', 'localhost']
+ALLOWED_HOSTS = ['api.translatefor.sg', 'localhost', 'translatefor-sg.dt.r.appspot.com']
 
 # Application definition
 
@@ -90,9 +90,20 @@ WSGI_APPLICATION = 'translateforsg.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': env.db()
-}
+if os.environ.get('GAE_APPLICATION'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': env.str('DATABASE_HOST'),
+            'USER': env.str('DATABASE_USER'),
+            'PASSWORD': env.str('DATABASE_PASSWORD'),
+            'NAME': env.str('DATABASE_NAME'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': env.db()
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -142,6 +153,3 @@ CORS_ORIGIN_ALLOW_ALL = True
 GS_BUCKET_NAME = 'translateforsg-data'
 GS_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-)
