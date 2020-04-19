@@ -74,7 +74,7 @@ class Translation(models.Model):
 
         if not self.audio_clip:
             filename = hashlib.md5(self.content.encode()).hexdigest()
-            content = generate_audio_file(self.content, self.language.code)
+            content = generate_audio_file(self.content, self.language.code, self.language.speaking_rate)
             self.audio_clip.save(filename + '.mp3', content)
         super().save(force_insert, force_update, using, update_fields)
 
