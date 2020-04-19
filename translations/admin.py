@@ -1,4 +1,6 @@
 from django.contrib import admin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
 from .models import Language, Category, Phrase, Translation, Volunteer, AvailabilitySlot
@@ -25,12 +27,20 @@ class TranslationInlineAdmin(admin.StackedInline):
     readonly_fields = ['created_at', 'updated_at']
 
 
+class PhraseResource(resources.ModelResource):
+    class Meta:
+        model = Phrase
+        exclude = ['id']
+
+
 @admin.register(Phrase)
-class PhraseAdmin(VersionAdmin):
-    list_display = ['summary', 'category', 'updated_at']
+class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
+    list_display = ['summary', 'category', 'content', 'updated_at']
     search_fields = ['summary', 'content']
+    list_filter = ['category']
     inlines = [TranslationInlineAdmin]
     readonly_fields = ['created_at', 'updated_at']
+    resource_class = PhraseResource
 
 
 @admin.register(Volunteer)
