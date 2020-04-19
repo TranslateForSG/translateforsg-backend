@@ -7,7 +7,8 @@ from translations.serializers import PhraseSerializer, LanguageSerializer, Categ
 
 class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PhraseSerializer
-    queryset = Phrase.objects.all() \
+    queryset = Phrase.objects.all()\
+        .select_related('category') \
         .prefetch_related('translation_set', 'translation_set__language') \
         .order_by('id')
     pagination_class = PerPage100
