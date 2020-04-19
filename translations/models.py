@@ -1,9 +1,12 @@
+import hashlib
 from uuid import uuid4
 
 from django.conf import settings
 from django.db import models
 from django.utils.datetime_safe import datetime
+from django.utils.text import slugify
 
+from translations.audio_generation import generate_audio_file
 from translations.consts import DAYS_OF_WEEK, ETHNICITY_LIST
 
 
@@ -50,7 +53,11 @@ class Translation(models.Model):
 
     language = models.ForeignKey('Language', on_delete=models.CASCADE)
     content = models.TextField()
-    audio_clip = models.FileField(blank=True)
+    audio_clip = models.FileField(
+        blank=True,
+        help_text='Optional, will be auto generated if not provided.',
+        upload_to='recorded_clips/'
+    )
     special_note = models.TextField(verbose_name='Special note to doctor (if needed)', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -58,6 +65,15 @@ class Translation(models.Model):
 
     def __str__(self):
         return f'{self.phrase.summary} for {self.language.name}'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+
+        if not self.audio_clip:
+            filename = hashlib.md5(self.content.encode()).hexdigest()
+            content = generate_audio_file(self.content, self.language.code)
+            self.audio_clip.save(filename + '.mp3', content)
+            self.is_audio_generated = True
+        super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
         unique_together = ('language', 'phrase')
