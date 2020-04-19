@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.datetime_safe import datetime
 from django.utils.text import slugify
 
-from translations.audio_generation import generate_audio_file
+from translations.audio_generation import generate_audio_file, generate_translation
 from translations.consts import DAYS_OF_WEEK, ETHNICITY_LIST
 
 
@@ -14,6 +14,7 @@ class Language(models.Model):
     name = models.CharField(max_length=50)
     native_name = models.CharField(max_length=100)
     code = models.CharField(max_length=10, db_index=True, unique=True)
+    speaking_rate = models.DecimalField(max_digits=3, decimal_places=2, default=0.85)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -52,7 +53,7 @@ class Translation(models.Model):
     phrase = models.ForeignKey('Phrase', on_delete=models.CASCADE)
 
     language = models.ForeignKey('Language', on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(blank=True)
     audio_clip = models.FileField(
         blank=True,
         help_text='Optional, will be auto generated if not provided.',
@@ -68,11 +69,13 @@ class Translation(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
+        if not self.content.strip():
+            self.content = generate_translation(text=self.phrase.content, target_language=self.language.code)
+
         if not self.audio_clip:
             filename = hashlib.md5(self.content.encode()).hexdigest()
             content = generate_audio_file(self.content, self.language.code)
             self.audio_clip.save(filename + '.mp3', content)
-            self.is_audio_generated = True
         super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
