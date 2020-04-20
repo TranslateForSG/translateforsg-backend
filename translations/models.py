@@ -1,14 +1,10 @@
 import hashlib
-from uuid import uuid4
 
 from adminsortable.fields import SortableForeignKey
 from adminsortable.models import SortableMixin
-from django.conf import settings
 from django.db import models
-from django.utils.datetime_safe import datetime
 
 from translations.audio_generation import generate_audio_file, generate_translation
-from translations.consts import DAYS_OF_WEEK, ETHNICITY_LIST
 
 
 class Language(models.Model):
@@ -98,3 +94,13 @@ class Translation(models.Model):
 
     class Meta:
         unique_together = ('language', 'phrase')
+
+
+class Contributor(models.Model):
+    name = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

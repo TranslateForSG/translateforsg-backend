@@ -3,8 +3,9 @@ from rest_framework import mixins, viewsets, filters
 from rest_framework.exceptions import ValidationError
 
 from translateforsg.pagination import PerPage1000, PerPage100
-from translations.models import Language, Phrase, Category, Translation
-from translations.serializers import PhraseSerializer, LanguageSerializer, CategorySerializer, TranslationSerializerMain
+from translations.models import Language, Phrase, Category, Translation, Contributor
+from translations.serializers import PhraseSerializer, LanguageSerializer, CategorySerializer, \
+    TranslationSerializerMain, ContributorSerializer
 
 
 class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -54,3 +55,9 @@ class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         if not self.request.query_params.get('language__name'):
             raise ValidationError({'detail': 'Must provide language as a filter'})
         return super().list(request, *args, **kwargs)
+
+
+class ContributorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = ContributorSerializer
+    queryset = Contributor.objects.all().order_by('?')
+    pagination_class = PerPage1000

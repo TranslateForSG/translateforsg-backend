@@ -1,4 +1,4 @@
-from adminsortable.admin import SortableTabularInline, SortableStackedInline, NonSortableParentAdmin
+from adminsortable.admin import SortableTabularInline, NonSortableParentAdmin
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
-from .models import Language, Category, Phrase, Translation
+from .models import Language, Category, Phrase, Translation, Contributor
 
 
 @admin.register(Language)
@@ -58,3 +58,10 @@ class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     inlines = [TranslationInlineAdmin]
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource
+
+
+@admin.register(Contributor)
+class ContributorAdmin(VersionAdmin):
+    list_display = ['name']
+    search_fields = ['name']
+    readonly_fields = ['created_at', 'updated_at']

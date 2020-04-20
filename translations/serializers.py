@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from translations.models import Translation, Language, Phrase, Category
+from translations.models import Translation, Language, Phrase, Category, Contributor
 
 
 class TranslationSerializer(serializers.ModelSerializer):
@@ -49,3 +49,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
+
+
+class ContributorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contributor
+        fields = ['name']
