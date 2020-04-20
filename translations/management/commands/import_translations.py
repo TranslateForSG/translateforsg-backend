@@ -2,6 +2,7 @@ import csv
 import re
 
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 
 from translations.models import Translation, Language, Phrase
 
@@ -22,7 +23,10 @@ class Command(BaseCommand):
             t = Translation(content=row['TRANSLATED_TEXT'], language=language, phrase=phrase)
             # md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
             # t.audio_clip.save(f'{md5}.mp3', File(open('/tmp/translateforsg/audio.mp3', 'rb')))
-            t.save()
+            try:
+                t.save()
+            except IntegrityError:
+                self.stderr.write(f'FAIL for {row["ENGLISH"]}')
             print(t.id, t.phrase.content)
 
     def handle(self, *args, **options):
