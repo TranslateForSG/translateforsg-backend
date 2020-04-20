@@ -1,5 +1,7 @@
 from adminsortable.admin import SortableTabularInline, SortableStackedInline, NonSortableParentAdmin
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
@@ -16,20 +18,26 @@ class LanguageAdmin(admin.ModelAdmin):
 
 class PhraseInlineAdmin(SortableTabularInline):
     model = Phrase
-    fields = ['summary', 'content']
+    fields = ['summary', 'content', 'change_link']
     extra = 0
-    readonly_fields = ['summary', 'content', 'created_at', 'updated_at']
+    readonly_fields = ['summary', 'content', 'change_link', 'created_at', 'updated_at']
+
+    def change_link(self, obj):
+        return mark_safe('<a href="%s">Full edit</a>' % \
+                         reverse('admin:translations_phrase_change',
+                                 args=(obj.id,)))
 
 
 @admin.register(Category)
 class CategoryAdmin(NonSortableParentAdmin):
-    list_display = ['name']
+    list_display = ['name', 'parent_category']
     search_fields = ['name']
+    list_filter = ['parent_category']
     readonly_fields = ['created_at', 'updated_at']
     inlines = [PhraseInlineAdmin]
 
 
-class TranslationInlineAdmin(admin.TabularInline):
+class TranslationInlineAdmin(admin.StackedInline):
     model = Translation
     fields = ['language', 'content', 'special_note', 'audio_clip']
     extra = 0
