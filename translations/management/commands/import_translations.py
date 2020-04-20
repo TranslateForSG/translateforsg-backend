@@ -20,6 +20,10 @@ class Command(BaseCommand):
         phrases = Phrase.objects.filter(content=row['ENGLISH'])
 
         for phrase in phrases:
+
+            if Translation.objects.filter(phrase=phrase, language=language).exists():
+                continue
+
             t = Translation(content=row['TRANSLATED_TEXT'], language=language, phrase=phrase)
             # md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
             # t.audio_clip.save(f'{md5}.mp3', File(open('/tmp/translateforsg/audio.mp3', 'rb')))
