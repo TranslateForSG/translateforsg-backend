@@ -1,3 +1,4 @@
+from adminsortable.admin import SortableTabularInline, SortableStackedInline, NonSortableParentAdmin
 from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -13,14 +14,22 @@ class LanguageAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
 
+class PhraseInlineAdmin(SortableTabularInline):
+    model = Phrase
+    fields = ['summary', 'content']
+    extra = 0
+    readonly_fields = ['summary', 'content', 'created_at', 'updated_at']
+
+
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(NonSortableParentAdmin):
     list_display = ['name']
     search_fields = ['name']
     readonly_fields = ['created_at', 'updated_at']
+    inlines = [PhraseInlineAdmin]
 
 
-class TranslationInlineAdmin(admin.StackedInline):
+class TranslationInlineAdmin(admin.TabularInline):
     model = Translation
     fields = ['language', 'content', 'special_note', 'audio_clip']
     extra = 0

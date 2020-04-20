@@ -1,10 +1,11 @@
 import hashlib
 from uuid import uuid4
 
+from adminsortable.fields import SortableForeignKey
+from adminsortable.models import SortableMixin
 from django.conf import settings
 from django.db import models
 from django.utils.datetime_safe import datetime
-from django.utils.text import slugify
 
 from translations.audio_generation import generate_audio_file, generate_translation
 from translations.consts import DAYS_OF_WEEK, ETHNICITY_LIST
@@ -37,16 +38,20 @@ class Category(models.Model):
         return self.name
 
 
-class Phrase(models.Model):
+class Phrase(SortableMixin):
     summary = models.CharField(max_length=100)
     content = models.TextField()
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    category = SortableForeignKey('Category', on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(editable=False, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.summary
+
+    class Meta:
+        ordering = ['order']
 
 
 class Translation(models.Model):
