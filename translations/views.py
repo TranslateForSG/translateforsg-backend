@@ -26,7 +26,7 @@ class LanguageViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.all().order_by('name')
+    queryset = Category.objects.all().order_by('id')
     pagination_class = PerPage1000
 
     def get_queryset(self):
@@ -41,7 +41,9 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TranslationSerializerMain
-    queryset = Translation.objects.all().order_by('id')
+    queryset = Translation.objects.all() \
+        .select_related('phrase', 'phrase__category') \
+        .order_by('phrase_id')
 
     pagination_class = PerPage100
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
