@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
-from .models import Language, Category, Phrase, Translation, Volunteer, AvailabilitySlot
+from .models import Language, Category, Phrase, Translation
 
 
 @admin.register(Language)
@@ -58,16 +58,3 @@ class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     inlines = [TranslationInlineAdmin]
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource
-
-
-@admin.register(Volunteer)
-class VolunteerAdmin(VersionAdmin):
-    list_display = ['display_name', 'language', 'availability']
-    search_fields = ['display_name']
-    list_filter = ['availability', 'language']
-    exclude = ['uuid', 'availability']
-    readonly_fields = ['created_at', 'updated_at']
-    filter_horizontal = ['availability_slots']
-
-
-admin.site.register(AvailabilitySlot)
