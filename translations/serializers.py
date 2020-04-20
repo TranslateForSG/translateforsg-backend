@@ -12,6 +12,14 @@ class TranslationSerializer(serializers.ModelSerializer):
         fields = ['language', 'category', 'content', 'special_note', 'audio_clip']
 
 
+class PhraseSerializerWithoutTranslation(serializers.ModelSerializer):
+    category = serializers.StringRelatedField()
+
+    class Meta:
+        model = Phrase
+        fields = ['summary', 'content', 'category']
+
+
 class PhraseSerializer(serializers.ModelSerializer):
     translations = TranslationSerializer(many=True, source='translation_set')
     category = serializers.StringRelatedField()
@@ -19,6 +27,16 @@ class PhraseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Phrase
         fields = ['summary', 'content', 'category', 'translations']
+
+
+class TranslationSerializerMain(serializers.ModelSerializer):
+    language = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
+    phrase = PhraseSerializerWithoutTranslation()
+
+    class Meta:
+        model = Translation
+        fields = ['language', 'category', 'content', 'special_note', 'audio_clip', 'phrase']
 
 
 class LanguageSerializer(serializers.ModelSerializer):

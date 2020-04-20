@@ -17,14 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from translations.views import PhraseViewSet, LanguageViewSet, CategoryViewSet, VolunteerViewSet
+from translations.views import PhraseViewSet, LanguageViewSet, CategoryViewSet, TranslationViewSet
 
 router = SimpleRouter()
 
 router.register('phrases', PhraseViewSet, 'phrase')
 router.register('languages', LanguageViewSet, 'language')
 router.register('categories', CategoryViewSet, 'category')
-router.register('volunteers', VolunteerViewSet, 'volunteer')
+router.register('translations', TranslationViewSet, 'translation')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
