@@ -46,7 +46,7 @@ class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PerPage100
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['phrase__summary', 'phrase__content', 'content']
-    filterset_fields = ['language__name', 'phrase__category__name']
+    filterset_fields = ['language__name', 'phrase__category__name', 'phrase__category']
 
     def list(self, request, *args, **kwargs):
         if not self.request.query_params.get('language__name'):
