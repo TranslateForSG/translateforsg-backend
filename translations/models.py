@@ -23,6 +23,19 @@ class Language(models.Model):
     def __str__(self):
         return self.name
 
+    def fill_in_untranslated(self):
+        all_phrases = set(Phrase.objects.values_list('id', flat=True))
+        translated_phrases = set(Phrase.objects.filter(translation__language=self).values_list('id', flat=True))
+
+        remaining_ids = list(all_phrases - translated_phrases)
+        remaining_phrases = Phrase.objects.filter(pk__in=remaining_ids)
+
+        for phrase in remaining_phrases:
+            translation = Translation(language=self, phrase=phrase)
+            translation.save()
+
+        return remaining_ids
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
