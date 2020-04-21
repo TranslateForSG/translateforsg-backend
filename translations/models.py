@@ -37,6 +37,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     parent_category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
 
+    intended_for = models.ManyToManyField('UserType', blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -50,7 +52,7 @@ class Category(models.Model):
 class Phrase(SortableMixin):
     summary = models.CharField(max_length=100)
     content = models.TextField()
-    category = SortableForeignKey('Category', on_delete=models.CASCADE)
+    categories = models.ManyToManyField('Category', through='PhraseCategory', related_query_name='phrases', related_name='phrase')
     order = models.PositiveIntegerField(editable=False, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -104,3 +106,32 @@ class Contributor(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserType(SortableMixin):
+    name = models.CharField(max_length=100)
+    order = models.PositiveIntegerField(editable=False, db_index=True, default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['order']
+
+
+class PhraseCategory(SortableMixin):
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, db_index=True)
+    phrase = models.ForeignKey('Phrase', on_delete=models.CASCADE, db_index=True)
+    order = models.PositiveIntegerField(editable=False, db_index=True, default=0)
+
+    def __str__(self):
+        return f'{self.category.name} - {self.phrase.content}'
+
+    class Meta:
+        ordering = ['order']
+
+
+

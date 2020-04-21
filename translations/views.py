@@ -3,16 +3,16 @@ from rest_framework import mixins, viewsets, filters
 from rest_framework.exceptions import ValidationError
 
 from translateforsg.pagination import PerPage1000, PerPage100
-from translations.models import Language, Phrase, Category, Translation, Contributor
+from translations.filters import TranslationFilterSet
+from translations.models import Language, Phrase, Category, Translation, Contributor, UserType
 from translations.serializers import PhraseSerializer, LanguageSerializer, CategorySerializer, \
-    TranslationSerializerMain, ContributorSerializer
+    TranslationSerializerMain, ContributorSerializer, UserTypeSerializer
 
 
 class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PhraseSerializer
     queryset = Phrase.objects.all() \
-        .select_related('category') \
-        .prefetch_related('translation_set', 'translation_set__language') \
+        .prefetch_related('translation_set', 'translation_set__language', 'categories') \
         .order_by('id')
     pagination_class = PerPage1000
     filter_backends = [filters.SearchFilter]
@@ -43,13 +43,14 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TranslationSerializerMain
     queryset = Translation.objects.all() \
-        .select_related('phrase', 'phrase__category') \
+        .select_related('phrase') \
+        .prefetch_related('phrase__categories') \
         .order_by('phrase_id')
 
     pagination_class = PerPage100
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['phrase__summary', 'phrase__content', 'content']
-    filterset_fields = ['language__name', 'phrase__category__name', 'phrase__category']
+    filterset_class = TranslationFilterSet
 
     def list(self, request, *args, **kwargs):
         if not self.request.query_params.get('language__name'):
@@ -61,3 +62,9 @@ class ContributorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = ContributorSerializer
     queryset = Contributor.objects.all().order_by('?')
     pagination_class = PerPage1000
+
+
+class UserTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = UserTypeSerializer
+    queryset = UserType.objects.all().order_by('?')
+    pagination_class = PerPage100

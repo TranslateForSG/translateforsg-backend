@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
-from .models import Language, Category, Phrase, Translation, Contributor
+from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory
 
 
 @admin.register(Language)
@@ -17,23 +17,27 @@ class LanguageAdmin(admin.ModelAdmin):
 
 
 class PhraseInlineAdmin(SortableTabularInline):
-    model = Phrase
-    fields = ['summary', 'content', 'change_link']
+    model = PhraseCategory
+    fields = ['content', 'change_link']
+    readonly_fields = ['content', 'change_link']
     extra = 0
-    readonly_fields = ['summary', 'content', 'change_link', 'created_at', 'updated_at']
+
+    def content(self, obj):
+        return obj.phrase.content
 
     def change_link(self, obj):
-        return mark_safe('<a href="%s">Full edit</a>' % \
+        return mark_safe('<a href="%s">Edit</a>' % \
                          reverse('admin:translations_phrase_change',
-                                 args=(obj.id,)))
+                                 args=(obj.phrase_id,)))
 
 
 @admin.register(Category)
 class CategoryAdmin(NonSortableParentAdmin):
     list_display = ['name', 'parent_category']
     search_fields = ['name']
-    list_filter = ['parent_category']
+    list_filter = ['parent_category', 'intended_for']
     readonly_fields = ['created_at', 'updated_at']
+    filter_horizontal = ['intended_for']
     inlines = [PhraseInlineAdmin]
 
 
@@ -52,9 +56,9 @@ class PhraseResource(resources.ModelResource):
 
 @admin.register(Phrase)
 class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
-    list_display = ['summary', 'category', 'content', 'updated_at']
+    list_display = ['summary', 'content', 'updated_at']
     search_fields = ['summary', 'content']
-    list_filter = ['category']
+    filter_horizontal = ['categories']
     inlines = [TranslationInlineAdmin]
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource

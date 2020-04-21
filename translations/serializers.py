@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from translations.models import Translation, Language, Phrase, Category, Contributor
+from translations.models import Translation, Language, Phrase, Category, Contributor, UserType
 
 
 class TranslationSerializer(serializers.ModelSerializer):
@@ -13,30 +13,26 @@ class TranslationSerializer(serializers.ModelSerializer):
 
 
 class PhraseSerializerWithoutTranslation(serializers.ModelSerializer):
-    category = serializers.StringRelatedField()
-
     class Meta:
         model = Phrase
-        fields = ['summary', 'content', 'category']
+        fields = ['summary', 'content']
 
 
 class PhraseSerializer(serializers.ModelSerializer):
     translations = TranslationSerializer(many=True, source='translation_set')
-    category = serializers.StringRelatedField()
 
     class Meta:
         model = Phrase
-        fields = ['summary', 'content', 'category', 'translations']
+        fields = ['summary', 'content', 'translations']
 
 
 class TranslationSerializerMain(serializers.ModelSerializer):
     language = serializers.StringRelatedField()
-    category = serializers.StringRelatedField()
     phrase = PhraseSerializerWithoutTranslation()
 
     class Meta:
         model = Translation
-        fields = ['language', 'category', 'content', 'special_note', 'audio_clip', 'phrase']
+        fields = ['language', 'content', 'special_note', 'audio_clip', 'phrase']
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -54,4 +50,10 @@ class CategorySerializer(serializers.ModelSerializer):
 class ContributorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contributor
+        fields = ['name']
+
+
+class UserTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserType
         fields = ['name']
