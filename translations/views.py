@@ -29,6 +29,9 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all().order_by('id')
     pagination_class = PerPage1000
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['name']
+    filterset_fields = ['intended_for', 'intended_for__name']
 
     def get_queryset(self):
         qs = super().get_queryset()

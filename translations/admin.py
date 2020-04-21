@@ -6,7 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
-from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory
+from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType
 
 
 @admin.register(Language)
@@ -65,6 +65,13 @@ class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
 
 
 @admin.register(Contributor)
+class ContributorAdmin(VersionAdmin):
+    list_display = ['name']
+    search_fields = ['name']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(UserType)
 class ContributorAdmin(VersionAdmin):
     list_display = ['name']
     search_fields = ['name']

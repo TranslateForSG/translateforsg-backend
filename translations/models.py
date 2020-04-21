@@ -123,7 +123,7 @@ class UserType(SortableMixin):
 
 
 class PhraseCategory(SortableMixin):
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, db_index=True)
+    category = SortableForeignKey('Category', on_delete=models.CASCADE, db_index=True)
     phrase = models.ForeignKey('Phrase', on_delete=models.CASCADE, db_index=True)
     order = models.PositiveIntegerField(editable=False, db_index=True, default=0)
 
