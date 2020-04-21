@@ -11,9 +11,10 @@ from .models import Language, Category, Phrase, Translation, Contributor, Phrase
 
 @admin.register(Language)
 class LanguageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'native_name', 'code']
+    list_display = ['name', 'native_name', 'code', 'is_active']
     search_fields = ['name', 'native_name', 'code']
     readonly_fields = ['created_at', 'updated_at']
+    list_filter = ['is_active']
 
 
 class PhraseInlineAdmin(SortableTabularInline):
@@ -33,9 +34,9 @@ class PhraseInlineAdmin(SortableTabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(NonSortableParentAdmin):
-    list_display = ['name', 'parent_category']
+    list_display = ['name', 'parent_category', 'is_active']
     search_fields = ['name']
-    list_filter = ['parent_category', 'intended_for']
+    list_filter = ['parent_category', 'intended_for', 'is_active']
     readonly_fields = ['created_at', 'updated_at']
     filter_horizontal = ['intended_for']
     inlines = [PhraseInlineAdmin]
@@ -72,7 +73,8 @@ class ContributorAdmin(VersionAdmin):
 
 
 @admin.register(UserType)
-class ContributorAdmin(VersionAdmin):
-    list_display = ['name']
+class UserTypeAdmin(VersionAdmin):
+    list_display = ['name', 'is_active']
     search_fields = ['name']
+    list_filter = ['is_active']
     readonly_fields = ['created_at', 'updated_at']

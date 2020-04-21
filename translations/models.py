@@ -13,6 +13,8 @@ class Language(models.Model):
     code = models.CharField(max_length=10, db_index=True, unique=True)
     speaking_rate = models.DecimalField(max_digits=3, decimal_places=2, default=0.85)
 
+    is_active = models.BooleanField()
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -38,6 +40,8 @@ class Category(models.Model):
     parent_category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
 
     intended_for = models.ManyToManyField('UserType', blank=True)
+
+    is_active = models.BooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -111,6 +115,8 @@ class Contributor(models.Model):
 class UserType(SortableMixin):
     name = models.CharField(max_length=100)
     order = models.PositiveIntegerField(editable=False, db_index=True, default=0)
+
+    is_active = models.BooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

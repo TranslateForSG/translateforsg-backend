@@ -21,13 +21,13 @@ class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class LanguageViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = LanguageSerializer
-    queryset = Language.objects.all().order_by('name')
+    queryset = Language.objects.filter(is_active=True).order_by('name')
     pagination_class = PerPage1000
 
 
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.all().order_by('id')
+    queryset = Category.objects.filter(is_active=True).order_by('id')
     pagination_class = PerPage1000
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name']
@@ -69,5 +69,5 @@ class ContributorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class UserTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = UserTypeSerializer
-    queryset = UserType.objects.all().order_by('?')
+    queryset = UserType.objects.filter(is_active=True).order_by('?')
     pagination_class = PerPage100
