@@ -13,7 +13,8 @@ class PhraseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if 'instance' in kwargs:
             initial = kwargs.setdefault('initial', {})
-            initial['categories'] = [t.category.pk for t in kwargs['instance'].phrasecategory_set.all()]
+            if kwargs['instance']:
+                initial['categories'] = [t.category.pk for t in kwargs['instance'].phrasecategory_set.all()]
 
         forms.ModelForm.__init__(self, *args, **kwargs)
 
