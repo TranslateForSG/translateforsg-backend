@@ -28,9 +28,8 @@ class PhraseInlineAdmin(SortableTabularInline):
         return obj.phrase.content
 
     def change_link(self, obj):
-        return mark_safe('<a href="%s">Edit</a>' % \
-                         reverse('admin:translations_phrase_change',
-                                 args=(obj.phrase_id,)))
+        url = reverse('admin:translations_phrase_change', args=(obj.phrase_id,))
+        return mark_safe('<a href="%s">Edit</a>' % url)
 
 
 @admin.register(Category)
@@ -64,6 +63,7 @@ class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     form = PhraseForm
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource
+
 
 
 @admin.register(Contributor)
