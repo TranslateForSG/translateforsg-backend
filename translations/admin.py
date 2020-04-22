@@ -63,6 +63,7 @@ class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     form = PhraseForm
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource
+    ordering = ['order']
 
 
 
