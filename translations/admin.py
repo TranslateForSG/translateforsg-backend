@@ -6,6 +6,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
+from .forms import PhraseForm
 from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType
 
 
@@ -59,8 +60,8 @@ class PhraseResource(resources.ModelResource):
 class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     list_display = ['summary', 'content', 'updated_at']
     search_fields = ['summary', 'content']
-    filter_horizontal = ['categories']
     inlines = [TranslationInlineAdmin]
+    form = PhraseForm
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource
 
