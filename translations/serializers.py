@@ -44,7 +44,7 @@ class LanguageSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'needs_original_phrase']
 
 
 class ContributorSerializer(serializers.ModelSerializer):
@@ -56,4 +56,4 @@ class ContributorSerializer(serializers.ModelSerializer):
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserType
-        fields = ['name']
+        fields = ['name', 'needs_original_phrase']

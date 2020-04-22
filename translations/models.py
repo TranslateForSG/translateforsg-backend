@@ -42,6 +42,7 @@ class Category(models.Model):
     intended_for = models.ManyToManyField('UserType', blank=True)
 
     is_active = models.BooleanField()
+    needs_original_phrase = models.NullBooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -56,7 +57,8 @@ class Category(models.Model):
 class Phrase(SortableMixin):
     summary = models.CharField(max_length=100)
     content = models.TextField()
-    categories = models.ManyToManyField('Category', through='PhraseCategory', related_query_name='phrases', related_name='phrase')
+    categories = models.ManyToManyField('Category', through='PhraseCategory', related_query_name='phrases',
+                                        related_name='phrase')
     order = models.PositiveIntegerField(editable=False, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -117,6 +119,7 @@ class UserType(SortableMixin):
     order = models.PositiveIntegerField(editable=False, db_index=True, default=0)
 
     is_active = models.BooleanField()
+    needs_original_phrase = models.NullBooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -138,6 +141,3 @@ class PhraseCategory(SortableMixin):
 
     class Meta:
         ordering = ['order']
-
-
-
