@@ -27,7 +27,7 @@ class LanguageViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.filter(is_active=True).order_by('id')
+    queryset = Category.objects.filter(is_active=True).order_by('order')
     pagination_class = PerPage1000
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name']
