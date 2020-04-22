@@ -35,7 +35,7 @@ class Language(models.Model):
         return remaining_ids
 
 
-class Category(models.Model):
+class Category(SortableMixin):
     name = models.CharField(max_length=100)
     parent_category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
 
@@ -43,12 +43,14 @@ class Category(models.Model):
 
     is_active = models.BooleanField()
     needs_original_phrase = models.NullBooleanField()
+    order = models.PositiveIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = 'categories'
+        ordering = ['order']
 
     def __str__(self):
         return self.name

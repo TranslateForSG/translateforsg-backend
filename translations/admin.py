@@ -1,4 +1,4 @@
-from adminsortable.admin import SortableTabularInline, NonSortableParentAdmin
+from adminsortable.admin import SortableTabularInline, SortableAdmin
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -33,7 +33,7 @@ class PhraseInlineAdmin(SortableTabularInline):
 
 
 @admin.register(Category)
-class CategoryAdmin(NonSortableParentAdmin):
+class CategoryAdmin(SortableAdmin):
     list_display = ['name', 'parent_category', 'is_active']
     search_fields = ['name']
     list_filter = ['parent_category', 'intended_for', 'is_active']
