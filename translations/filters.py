@@ -5,6 +5,7 @@ from translations.models import Translation
 
 class TranslationFilterSet(django_filters.FilterSet):
     phrase__category__name = django_filters.CharFilter(field_name='phrase__categories__name', lookup_expr='iexact')
+    lookup = django_filters.CharFilter(field_name='phrase__content', lookup_expr='iexact')
 
     class Meta:
         model = Translation
