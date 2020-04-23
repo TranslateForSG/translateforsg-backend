@@ -10,6 +10,7 @@ from google_drive_downloader import GoogleDriveDownloader as gdd
 from translations.models import Translation, Language, Phrase
 
 PATTERN = re.compile(r'file\/d\/(.*)\/view')
+PATTERN2 = re.compile(r'file\/d\/(.*)\/view')
 
 
 class Command(BaseCommand):
@@ -18,6 +19,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('lang')
         parser.add_argument('csv_file')
+
+    def extract_id(self, google_drive_uri: str):
+        if google_drive_uri.startswith('https://drive.google.com/file'):
+            return PATTERN.search(google_drive_uri).groups()[0]
+        if google_drive_uri.startswith('https://drive.google.com/open'):
+            return PATTERN2.search(google_drive_uri).groups()[0]
+        return google_drive_uri
 
     def process_row(self, language, row):
         phrases = Phrase.objects.filter(content=row['ENGLISH'])
