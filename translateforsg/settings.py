@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'import_export',
     'adminsortable',
+    'drf_recaptcha',
 
     'translations',
 ]
@@ -154,3 +155,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 GS_BUCKET_NAME = 'translateforsg-data'
 GS_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
+
+DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY')

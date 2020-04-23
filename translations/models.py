@@ -13,8 +13,10 @@ class Language(models.Model):
     code = models.CharField(max_length=10, db_index=True, unique=True)
     speaking_rate = models.DecimalField(max_digits=3, decimal_places=2, default=0.85)
 
-    translation_code = models.CharField(max_length=10, blank=True, db_index=True, help_text='Translation will not be generated if blank')
-    speech_code = models.CharField(max_length=10, blank=True, db_index=True, help_text='Speech will not be generated if blank')
+    translation_code = models.CharField(max_length=10, blank=True, db_index=True,
+                                        help_text='Translation will not be generated if blank')
+    speech_code = models.CharField(max_length=10, blank=True, db_index=True,
+                                   help_text='Speech will not be generated if blank')
 
     is_active = models.BooleanField()
 
@@ -157,3 +159,23 @@ class PhraseCategory(SortableMixin):
 
     class Meta:
         ordering = ['order']
+
+
+class TranslationFeedback(models.Model):
+    translation = models.ForeignKey('Translation', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, blank=True)
+    whats_wrong = models.TextField(blank=True)
+    suggestion = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def accept(self):
+        trans = self.translation
+
+        trans.content = self.suggestion
+        trans.audio_clip = None
+        trans.save()
+
+        # automatically add ot contributors
+        Contributor.objects.get_or_create(name=self.name)

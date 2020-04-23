@@ -6,7 +6,7 @@ from translateforsg.pagination import PerPage1000, PerPage100
 from translations.filters import TranslationFilterSet
 from translations.models import Language, Phrase, Category, Translation, Contributor, UserType
 from translations.serializers import PhraseSerializer, LanguageSerializer, CategorySerializer, \
-    TranslationSerializerMain, ContributorSerializer, UserTypeSerializer
+    TranslationSerializerMain, ContributorSerializer, UserTypeSerializer, TranslationFeedbackSecureSerializer
 
 
 class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -71,3 +71,7 @@ class UserTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = UserTypeSerializer
     queryset = UserType.objects.filter(is_active=True).order_by('?')
     pagination_class = PerPage100
+
+
+class TranslationFeedbackViewsSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    serializer_class = TranslationFeedbackSecureSerializer

@@ -18,7 +18,7 @@ from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
 from translations.views import PhraseViewSet, LanguageViewSet, CategoryViewSet, TranslationViewSet, ContributorViewSet, \
-    UserTypeViewSet
+    UserTypeViewSet, TranslationFeedbackViewsSet
 
 router = SimpleRouter()
 
@@ -28,6 +28,7 @@ router.register('categories', CategoryViewSet, 'category')
 router.register('translations', TranslationViewSet, 'translation')
 router.register('contributors', ContributorViewSet, 'contributor')
 router.register('userTypes', UserTypeViewSet, 'user_type')
+router.register('translationFeedbacks', TranslationFeedbackViewsSet, 'translation_feedback')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

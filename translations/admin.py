@@ -7,7 +7,7 @@ from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
 from .forms import PhraseForm
-from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType
+from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType, TranslationFeedback
 
 
 @admin.register(Language)
@@ -49,6 +49,19 @@ class TranslationInlineAdmin(admin.StackedInline):
     readonly_fields = ['created_at', 'updated_at']
 
 
+class TranslationFeedbackInline(admin.StackedInline):
+    model = TranslationFeedback
+    fields = ['name', 'whats_wrong', 'suggestion']
+    extra = 0
+
+
+@admin.register(Translation)
+class TranslationAdmin(admin.ModelAdmin):
+    search_fields = ['translation__phrase__summary', 'translation__phrase', 'content']
+    list_display = ['content']
+    inlines = [TranslationFeedbackInline]
+
+
 class PhraseResource(resources.ModelResource):
     class Meta:
         model = Phrase
@@ -64,7 +77,6 @@ class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     readonly_fields = ['created_at', 'updated_at']
     resource_class = PhraseResource
     ordering = ['order']
-
 
 
 @admin.register(Contributor)
