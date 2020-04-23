@@ -62,9 +62,9 @@ class UserTypeSerializer(serializers.ModelSerializer):
 
 
 class TranslationFeedbackSecureSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100, required=False)
-    whats_wrong = serializers.CharField(max_length=1000, required=False)
-    suggestion = serializers.CharField(max_length=1000, required=False)
+    name = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    whats_wrong = serializers.CharField(max_length=1000, required=False, allow_blank=True)
+    suggestion = serializers.CharField(max_length=1000, required=False, allow_blank=True)
     translation_id = serializers.IntegerField(required=True)
 
     recaptcha = ReCaptchaV2Field()
