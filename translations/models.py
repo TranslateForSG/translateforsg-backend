@@ -13,6 +13,9 @@ class Language(models.Model):
     code = models.CharField(max_length=10, db_index=True, unique=True)
     speaking_rate = models.DecimalField(max_digits=3, decimal_places=2, default=0.85)
 
+    translation_code = models.CharField(max_length=10, blank=True, db_index=True, help_text='Translation will not be generated if blank')
+    speech_code = models.CharField(max_length=10, blank=True, db_index=True, help_text='Speech will not be generated if blank')
+
     is_active = models.BooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -33,6 +36,10 @@ class Language(models.Model):
             translation.save()
 
         return remaining_ids
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.translation_code = self.code
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class Category(SortableMixin):
@@ -93,14 +100,21 @@ class Translation(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 
-        if not self.content.strip():
-            self.content = generate_translation(text=self.phrase.content, target_language=self.language.code)
+        self.translate()
+        self.synthesize()
 
-        if not self.audio_clip:
-            filename = hashlib.md5(self.content.encode()).hexdigest()
-            content = generate_audio_file(self.content, self.language.code, self.language.speaking_rate)
-            self.audio_clip.save(filename + '.mp3', content)
         super().save(force_insert, force_update, using, update_fields)
+
+    def synthesize(self):
+        if not self.audio_clip and self.language.speech_code:
+            filename = hashlib.md5(self.content.encode()).hexdigest()
+            content = generate_audio_file(self.content, self.language.speech_code, self.language.speaking_rate)
+            self.audio_clip.save(filename + '.mp3', content)
+
+    def translate(self):
+        if not self.content.strip() and self.language.translation_code:
+            self.content = generate_translation(text=self.phrase.content,
+                                                target_language=self.language.translation_code)
 
     class Meta:
         unique_together = ('language', 'phrase')
