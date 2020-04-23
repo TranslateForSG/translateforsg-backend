@@ -92,3 +92,15 @@ class UserTypeAdmin(VersionAdmin):
     search_fields = ['name']
     list_filter = ['is_active']
     readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(TranslationFeedback)
+class TranslationFeedbackAdmin(admin.ModelAdmin):
+    list_display = ['phrase', 'language', 'name', 'created_at']
+    readonly_fields = ['translation']
+
+    def phrase(self, obj: TranslationFeedback):
+        return obj.translation.phrase.summary
+
+    def language(self, obj: TranslationFeedback):
+        return obj.translation.language
