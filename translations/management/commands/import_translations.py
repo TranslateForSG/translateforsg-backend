@@ -2,9 +2,9 @@ import csv
 import hashlib
 import re
 
+from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
-from odf.form import File
 from google_drive_downloader import GoogleDriveDownloader as gdd
 
 from translations.models import Translation, Language, Phrase
