@@ -1,8 +1,11 @@
 import csv
+import hashlib
 import re
 
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
+from odf.form import File
+from google_drive_downloader import GoogleDriveDownloader as gdd
 
 from translations.models import Translation, Language, Phrase
 
@@ -25,8 +28,14 @@ class Command(BaseCommand):
                 continue
 
             t = Translation(content=row['TRANSLATED_TEXT'], language=language, phrase=phrase)
-            # md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
-            # t.audio_clip.save(f'{md5}.mp3', File(open('/tmp/translateforsg/audio.mp3', 'rb')))
+
+            audio_url = row.get('AUDIO_URL')
+            if audio_url:
+                gdd.download_file_from_google_drive(file_id=PATTERN.search(audio_url).groups()[0],
+                                                    dest_path='/tmp/translateforsg/audio.mp3')
+                md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
+                with open('/tmp/translateforsg/audio.mp3', 'rb') as f:
+                    t.audio_clip.save(f'{md5}.mp3', File(f))
             try:
                 t.save()
             except IntegrityError:
