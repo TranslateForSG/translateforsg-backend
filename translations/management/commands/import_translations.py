@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
             audio_url = row.get('AUDIO_URL')
             if audio_url:
-                gdd.download_file_from_google_drive(file_id=PATTERN.search(audio_url).groups()[0],
+                gdd.download_file_from_google_drive(file_id=self.extract_id(audio_url),
                                                     dest_path='/tmp/translateforsg/audio.mp3')
                 md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
                 with open('/tmp/translateforsg/audio.mp3', 'rb') as f:
