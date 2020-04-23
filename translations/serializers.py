@@ -34,7 +34,7 @@ class TranslationSerializerMain(serializers.ModelSerializer):
 
     class Meta:
         model = Translation
-        fields = ['language', 'content', 'special_note', 'audio_clip', 'phrase']
+        fields = ['id', 'language', 'content', 'special_note', 'audio_clip', 'phrase']
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -65,14 +65,20 @@ class TranslationFeedbackSecureSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100, required=False)
     whats_wrong = serializers.CharField(max_length=1000, required=False)
     suggestion = serializers.CharField(max_length=1000, required=False)
+    translation_id = serializers.IntegerField(required=True)
 
     recaptcha = ReCaptchaV2Field()
 
     def validate(self, attrs):
-        if not attrs['whats_wrong'] and not attrs['suggestion']:
+        if not attrs.get('whats_wrong', '').strip() and not attrs.get('suggestion', '').strip():
             raise ValidationError({
                 'whats_wrong': 'Either whats_wrong or suggestion is required.',
                 'suggestion': 'Either whats_wrong or suggestion is required.',
+            })
+
+        if not Translation.objects.filter(pk=attrs['translation_id']).exists():
+            raise ValidationError({
+                'translation_id': 'Translation does not exist'
             })
         return super().validate(attrs)
 
