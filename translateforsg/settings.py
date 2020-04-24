@@ -52,9 +52,12 @@ INSTALLED_APPS = [
     'import_export',
     'adminsortable',
     'drf_recaptcha',
+    'fsm_admin',
 
     'translations',
 ]
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

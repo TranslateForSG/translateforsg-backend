@@ -1,7 +1,9 @@
 from adminsortable.admin import SortableTabularInline, SortableAdmin
 from django.contrib import admin
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from fsm_admin.mixins import FSMTransitionMixin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
@@ -96,9 +98,15 @@ class UserTypeAdmin(VersionAdmin):
 
 
 @admin.register(TranslationFeedback)
-class TranslationFeedbackAdmin(admin.ModelAdmin):
+class TranslationFeedbackAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_display = ['phrase', 'language', 'name', 'created_at']
-    readonly_fields = ['translation']
+    readonly_fields = ['name', 'whats_wrong', 'current_translation', 'translation', 'suggestion', 'status']
+    fields = ['status', 'name', 'whats_wrong', 'suggestion', 'current_translation', 'translation']
+    fsm_field = 'status'
+    list_filter = ['status']
+
+    def current_translation(self, obj: TranslationFeedback):
+        return obj.translation.content
 
     def phrase(self, obj: TranslationFeedback):
         return obj.translation.phrase.summary

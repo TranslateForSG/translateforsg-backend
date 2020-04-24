@@ -3,6 +3,7 @@ import hashlib
 from adminsortable.fields import SortableForeignKey
 from adminsortable.models import SortableMixin
 from django.db import models
+from django_fsm import FSMField, transition
 
 from translations.audio_generation import generate_audio_file, generate_translation
 
@@ -166,12 +167,14 @@ class TranslationFeedback(models.Model):
     name = models.CharField(max_length=100, blank=True)
     whats_wrong = models.TextField(blank=True)
     suggestion = models.TextField(blank=True)
+    status = FSMField(protected=True, default='new')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @transition(field=status, source='new', target='accepted')
     def accept(self):
-        trans = self.translation
+        trans = Translation.objects.get(pk=self.translation_id)
 
         trans.content = self.suggestion
         trans.audio_clip = None
@@ -179,6 +182,14 @@ class TranslationFeedback(models.Model):
 
         # automatically add ot contributors
         Contributor.objects.get_or_create(name=self.name)
+
+    @transition(field=status, source='new', target='rejected')
+    def reject(self):
+        pass
+
+    @transition(field=status, source='new', target='passed')
+    def passover(self):
+        pass
 
 
 class Contact(models.Model):
