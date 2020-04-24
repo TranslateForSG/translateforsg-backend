@@ -2,7 +2,8 @@ from drf_recaptcha.fields import ReCaptchaV2Field
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from translations.models import Translation, Language, Phrase, Category, Contributor, UserType, TranslationFeedback
+from translations.models import Translation, Language, Phrase, Category, Contributor, UserType, TranslationFeedback, \
+    Contact
 
 
 class TranslationSerializer(serializers.ModelSerializer):
@@ -89,3 +90,19 @@ class TranslationFeedbackSecureSerializer(serializers.Serializer):
         if 'recaptcha' in validated_data:
             validated_data.pop('recaptcha')
         return TranslationFeedback.objects.create(**validated_data)
+
+
+class ContactSecureSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    email = serializers.EmailField()
+    content = serializers.CharField(max_length=2000)
+
+    recaptcha = ReCaptchaV2Field()
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        if 'recaptcha' in validated_data:
+            validated_data.pop('recaptcha')
+        return Contact.objects.create(**validated_data)

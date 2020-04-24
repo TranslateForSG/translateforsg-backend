@@ -179,3 +179,12 @@ class TranslationFeedback(models.Model):
 
         # automatically add ot contributors
         Contributor.objects.get_or_create(name=self.name)
+
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    content = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

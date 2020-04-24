@@ -7,7 +7,8 @@ from import_export.admin import ImportExportModelAdmin
 from reversion.admin import VersionAdmin
 
 from .forms import PhraseForm
-from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType, TranslationFeedback
+from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType, TranslationFeedback, \
+    Contact
 
 
 @admin.register(Language)
@@ -104,3 +105,14 @@ class TranslationFeedbackAdmin(admin.ModelAdmin):
 
     def language(self, obj: TranslationFeedback):
         return obj.translation.language
+
+
+@admin.register(Contact)
+class ContactAdmin(VersionAdmin):
+    list_display = ['name', 'email', 'created_at']
+    search_fields = ['name', 'email', 'content']
+    readonly_fields = ['name', 'email', 'content', 'created_at', 'updated_at']
+    ordering = ['-created_at']
+
+    def has_add_permission(self, request):
+        return False
