@@ -14,4 +14,5 @@ RUN pip install -r requirements.txt
 
 COPY . /opt/translateforsg/backend/
 
-CMD uwsgi --http :8000 --module translateforsg.wsgi --enable-threads
+EXPOSE 80
+CMD uwsgi --http :80 --module translateforsg.wsgi --enable-threads
