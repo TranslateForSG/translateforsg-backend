@@ -150,7 +150,9 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-if 'TESTING' not in os.environ:
+IS_TESTING = 'TESTING' in os.environ
+
+if not IS_TESTING:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
@@ -159,6 +161,6 @@ if 'TESTING' not in os.environ:
     GS_DEFAULT_ACL = 'publicRead'
     AWS_QUERYSTRING_AUTH = False
 
-    DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY')
-    DRF_RECAPTCHA_TESTING = env.bool('DRF_RECAPTCHA_TESTING', default=False)
-    DRF_RECAPTCHA_TESTING_PASS = env.bool('DRF_RECAPTCHA_TESTING', default=False)
+DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY') if not IS_TESTING else 'test'
+DRF_RECAPTCHA_TESTING = env.bool('DRF_RECAPTCHA_TESTING', default=IS_TESTING)
+DRF_RECAPTCHA_TESTING_PASS = env.bool('DRF_RECAPTCHA_TESTING', default=IS_TESTING)
