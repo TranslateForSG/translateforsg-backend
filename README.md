@@ -1,5 +1,7 @@
 # Backend of TranslateForSG
 
+![CI Status](https://github.com/aniruddha-adhikary/translateforsg-backend/workflows/Django%20CI/badge.svg)
+
 This is a simple REST API provider for any HTTP-compatible consumer. E.g. Web App, Mobile App
 
 ## Dependencies
