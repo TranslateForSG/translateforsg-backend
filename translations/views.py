@@ -40,7 +40,7 @@ class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Translation.objects.all() \
         .select_related('phrase') \
         .prefetch_related('phrase__categories') \
-        .order_by('phrase_id')
+        .order_by('phrase__categories__order', 'phrase__phrasecategory__order')
 
     pagination_class = PerPage100
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
