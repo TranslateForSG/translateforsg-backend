@@ -34,15 +34,6 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     search_fields = ['name']
     filterset_fields = ['intended_for', 'intended_for__name']
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-
-        parents_only = self.request.query_params.get('parents_only')
-        if parents_only:
-            qs = qs.filter(parent_category__isnull=(parents_only == 'true'))
-
-        return qs
-
 
 class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TranslationSerializerMain

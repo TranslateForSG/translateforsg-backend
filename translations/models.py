@@ -47,7 +47,6 @@ class Language(models.Model):
 
 class Category(SortableMixin):
     name = models.CharField(max_length=100)
-    parent_category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
 
     intended_for = models.ManyToManyField('UserType', blank=True)
 

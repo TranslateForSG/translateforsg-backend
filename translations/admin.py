@@ -37,9 +37,9 @@ class PhraseInlineAdmin(SortableTabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(SortableAdmin):
-    list_display = ['name', 'parent_category', 'is_active']
+    list_display = ['name', 'is_active']
     search_fields = ['name']
-    list_filter = ['parent_category', 'intended_for', 'is_active']
+    list_filter = ['intended_for', 'is_active']
     readonly_fields = ['created_at', 'updated_at']
     filter_horizontal = ['intended_for']
     inlines = [PhraseInlineAdmin]
