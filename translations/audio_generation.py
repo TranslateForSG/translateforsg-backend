@@ -5,17 +5,16 @@ from django.core.files.base import ContentFile
 from google.cloud import texttospeech
 from google.cloud import translate_v2 as translate
 
-translate_client = translate.Client()
-client = texttospeech.TextToSpeechClient()
-
 
 def generate_translation(text: str, target_language, source_language='en'):
+    translate_client = translate.Client()
     if isinstance(text, six.binary_type):
         text = text.decode('utf-8')
 
     # Text can also be a sequence of strings, in which case this method
     # will return a sequence of results for each text.
-    result = translate_client.translate(text, target_language=target_language.split('-')[0], source_language=source_language)
+    result = translate_client.translate(text, target_language=target_language.split('-')[0],
+                                        source_language=source_language)
 
     return result['translatedText']
 
@@ -28,6 +27,7 @@ def preprocess_as_saml(text: str):
 
 
 def generate_audio_file(text: str, language_code, speaking_rate: Decimal):
+    client = texttospeech.TextToSpeechClient()
     # Set the text input to be synthesized
     ssml = preprocess_as_saml(text)
     synthesis_input = texttospeech.types.SynthesisInput(ssml=ssml)
