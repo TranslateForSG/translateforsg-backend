@@ -57,8 +57,6 @@ INSTALLED_APPS = [
     'translations',
 ]
 
-
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -146,20 +144,21 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-GS_BUCKET_NAME = 'translateforsg-data'
-GS_FILE_OVERWRITE = False
-GS_DEFAULT_ACL = 'publicRead'
-AWS_QUERYSTRING_AUTH = False
+if 'TESTING' not in os.environ:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
-DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY')
-DRF_RECAPTCHA_TESTING = env.bool('DRF_RECAPTCHA_TESTING', default=False)
-DRF_RECAPTCHA_TESTING_PASS = env.bool('DRF_RECAPTCHA_TESTING', default=False)
+    GS_BUCKET_NAME = 'translateforsg-data'
+    GS_FILE_OVERWRITE = False
+    GS_DEFAULT_ACL = 'publicRead'
+    AWS_QUERYSTRING_AUTH = False
+
+    DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY')
+    DRF_RECAPTCHA_TESTING = env.bool('DRF_RECAPTCHA_TESTING', default=False)
+    DRF_RECAPTCHA_TESTING_PASS = env.bool('DRF_RECAPTCHA_TESTING', default=False)
