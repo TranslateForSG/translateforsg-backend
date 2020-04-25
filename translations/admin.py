@@ -65,14 +65,19 @@ class TranslationAdmin(admin.ModelAdmin):
 
 
 class PhraseResource(resources.ModelResource):
+    english = resources.Field(attribute='content', column_name='ENGLISH')
+    translated_text = resources.Field(column_name='TRANSLATED_TEXT', default='')
+    audio_url = resources.Field(column_name='AUDIO_URL', default='')
+
     class Meta:
         model = Phrase
-        exclude = ['id']
+        fields = ['english', 'translated_text', 'audio_url']
 
 
 @admin.register(Phrase)
 class PhraseAdmin(ImportExportModelAdmin, VersionAdmin):
     list_display = ['summary', 'content', 'updated_at']
+    list_filter = ['categories']
     search_fields = ['summary', 'content']
     inlines = [TranslationInlineAdmin]
     form = PhraseForm
