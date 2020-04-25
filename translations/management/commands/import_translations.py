@@ -32,27 +32,34 @@ class Command(BaseCommand):
         phrases = Phrase.objects.filter(content=row['ENGLISH'])
 
         for phrase in phrases:
+            t = self.create_translation(audio_format, language, phrase, row)
+            if t:
+                print(t.id, t.phrase.content)
 
-            if Translation.objects.filter(phrase=phrase, language=language).exists():
-                continue
+    def create_translation(self, audio_format, language, phrase, row):
+        if Translation.objects.filter(phrase=phrase, language=language).exists():
+            return
 
-            t = Translation(content=row['TRANSLATED_TEXT'], language=language, phrase=phrase)
+        t = Translation(content=row['TRANSLATED_TEXT'], language=language, phrase=phrase)
+        audio_url = row.get('AUDIO_URL')
 
-            audio_url = row.get('AUDIO_URL')
+        if audio_url:
+            tmp_path = self.download_audio(audio_format, audio_url)
+            md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
 
-            if audio_url:
-                tmp_path = f'/tmp/translateforsg/audio.{audio_format}'
-                gdd.download_file_from_google_drive(file_id=self.extract_id(audio_url),
-                                                    dest_path=tmp_path, overwrite=True)
-                md5 = hashlib.md5(row['TRANSLATED_TEXT'].encode()).hexdigest()
+            with open(tmp_path, 'rb') as f:
+                t.audio_clip.save(f'{md5}.{audio_format}', File(f))
+        try:
+            t.save()
+        except IntegrityError:
+            self.stderr.write(f'FAIL for {row["ENGLISH"]}')
+        return t
 
-                with open(tmp_path, 'rb') as f:
-                    t.audio_clip.save(f'{md5}.{audio_format}', File(f))
-            try:
-                t.save()
-            except IntegrityError:
-                self.stderr.write(f'FAIL for {row["ENGLISH"]}')
-            print(t.id, t.phrase.content)
+    def download_audio(self, audio_format, audio_url):
+        tmp_path = f'/tmp/translateforsg/audio.{audio_format}'
+        gdd.download_file_from_google_drive(file_id=self.extract_id(audio_url),
+                                            dest_path=tmp_path, overwrite=True)
+        return tmp_path
 
     def handle(self, *args, **options):
         with open(options['csv_file'], newline='') as csvfile:

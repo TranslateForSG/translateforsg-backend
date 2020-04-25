@@ -1,6 +1,5 @@
 from adminsortable.admin import SortableTabularInline, SortableAdmin
 from django.contrib import admin
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from fsm_admin.mixins import FSMTransitionMixin

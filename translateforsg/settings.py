@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import environ
-from google.oauth2 import service_account
 
 env = environ.Env(
     DEBUG=(bool, False)

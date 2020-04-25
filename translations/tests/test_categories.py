@@ -12,9 +12,9 @@ class CategoryListTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
         doctor = UserType.objects.create(name='Doctor', is_active=True)
-        everyone = UserType.objects.create(name='Everyone', is_active=True)
+        UserType.objects.create(name='Everyone', is_active=True)
 
-        inactive = Category.objects.create(name='Inactive Category', is_active=False)
+        Category.objects.create(name='Inactive Category', is_active=False)
         active = Category.objects.create(name='Active Category', is_active=True)
         active.intended_for.add(doctor)
 

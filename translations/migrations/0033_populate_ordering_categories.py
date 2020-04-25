@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def copy_ordering(apps, schema_editor):
     Category = apps.get_model('translations', 'Category')
 
@@ -9,6 +10,7 @@ def copy_ordering(apps, schema_editor):
     Category.objects.all().update(
         order=F('id')
     )
+
 
 class Migration(migrations.Migration):
 
