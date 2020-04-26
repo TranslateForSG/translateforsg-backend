@@ -12,13 +12,13 @@ class TranslationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Translation
-        fields = ['language', 'category', 'content', 'special_note', 'audio_clip']
+        fields = ['id', 'language', 'category', 'content', 'special_note', 'audio_clip']
 
 
 class PhraseSerializerWithoutTranslation(serializers.ModelSerializer):
     class Meta:
         model = Phrase
-        fields = ['summary', 'content']
+        fields = ['id', 'summary', 'content']
 
 
 class PhraseSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class PhraseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Phrase
-        fields = ['summary', 'content', 'translations']
+        fields = ['id', 'summary', 'content', 'translations']
 
 
 class TranslationSerializerMain(serializers.ModelSerializer):
