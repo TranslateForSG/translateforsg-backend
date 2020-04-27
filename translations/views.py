@@ -79,7 +79,7 @@ class DownloadableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PerPage1000
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name', 'description']
-    filterset_fields = ['language', 'language__name']
+    filterset_fields = ['language', 'language__name', 'category', 'category__name']
 
 
 class SectionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

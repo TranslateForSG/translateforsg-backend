@@ -218,6 +218,7 @@ class Downloadable(models.Model):
     description = models.TextField(blank=True)
 
     language = models.ForeignKey('Language', on_delete=models.CASCADE)
+    category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
     downloadable_file = models.FileField(upload_to='downloadables/')
 
     created_at = models.DateTimeField(auto_now_add=True)
