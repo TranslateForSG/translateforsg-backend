@@ -4,10 +4,10 @@ from rest_framework.exceptions import ValidationError
 
 from translateforsg.pagination import PerPage1000, PerPage100
 from translations.filters import TranslationFilterSet
-from translations.models import Language, Phrase, Category, Translation, Contributor, UserType, Downloadable
+from translations.models import Language, Phrase, Category, Translation, Contributor, UserType, Downloadable, Section
 from translations.serializers import PhraseSerializer, LanguageSerializer, CategorySerializer, \
     TranslationSerializerMain, ContributorSerializer, UserTypeSerializer, TranslationFeedbackSecureSerializer, \
-    ContactSecureSerializer, DownloadableSerializer
+    ContactSecureSerializer, DownloadableSerializer, SectionSerializer
 
 
 class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -80,3 +80,11 @@ class DownloadableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name', 'description']
     filterset_fields = ['language', 'language__name']
+
+
+class SectionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = SectionSerializer
+    queryset = Section.objects.all().prefetch_related('category_set').order_by('order')
+    pagination_class = PerPage1000
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['name']
