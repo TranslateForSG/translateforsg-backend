@@ -9,7 +9,7 @@ from reversion.admin import VersionAdmin
 
 from .forms import PhraseForm
 from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType, TranslationFeedback, \
-    Contact, Downloadable
+    Contact, Downloadable, Section
 
 
 @admin.register(Language)
@@ -32,6 +32,33 @@ class PhraseInlineAdmin(SortableTabularInline):
     def change_link(self, obj):
         url = reverse('admin:translations_phrase_change', args=(obj.phrase_id,))
         return mark_safe('<a href="%s">Edit</a>' % url)
+
+
+class CategoryInlineAdmin(SortableTabularInline):
+    model = Category
+    fields = ['name', 'change_link']
+    readonly_fields = ['change_link']
+    extra = 0
+
+    def change_link(self, obj):
+        url = reverse('admin:translations_category_change', args=(obj.id,))
+        return mark_safe('<a href="%s">Edit</a>' % url)
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Section)
+class SectionAdmin(SortableAdmin):
+    list_display = ['name', 'is_active']
+    search_fields = ['name']
+    list_filter = ['intended_for', 'is_active']
+    readonly_fields = ['created_at', 'updated_at']
+    filter_horizontal = ['intended_for']
+    inlines = [CategoryInlineAdmin]
 
 
 @admin.register(Category)
