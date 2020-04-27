@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from translations.models import Translation, Language, Phrase, Category, Contributor, UserType, TranslationFeedback, \
-    Contact, Downloadable
+    Contact, Downloadable, Section
 
 
 class TranslationSerializer(serializers.ModelSerializer):
@@ -112,3 +112,11 @@ class DownloadableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Downloadable
         fields = ['id', 'name', 'description', 'downloadable_file', 'created_at', 'updated_at']
+
+
+class SectionSerializer(serializers.ModelSerializer):
+    categories = CategorySerializer(many=True, read_only=True, source='category_set')
+
+    class Meta:
+        model = Section
+        fields = ['id', 'name', 'categories']
