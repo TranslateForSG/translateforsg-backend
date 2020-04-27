@@ -9,7 +9,7 @@ from reversion.admin import VersionAdmin
 
 from .forms import PhraseForm
 from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType, TranslationFeedback, \
-    Contact
+    Contact, Downloadable
 
 
 @admin.register(Language)
@@ -128,3 +128,11 @@ class ContactAdmin(VersionAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(Downloadable)
+class DownloadableAdmin(VersionAdmin):
+    list_display = ['name', 'language', 'downloadable_file', 'updated_at']
+    list_filter = ['language']
+    readonly_fields = ['created_at', 'updated_at']
+    search_fields = ['name', 'description']

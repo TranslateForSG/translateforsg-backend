@@ -4,10 +4,10 @@ from rest_framework.exceptions import ValidationError
 
 from translateforsg.pagination import PerPage1000, PerPage100
 from translations.filters import TranslationFilterSet
-from translations.models import Language, Phrase, Category, Translation, Contributor, UserType
+from translations.models import Language, Phrase, Category, Translation, Contributor, UserType, Downloadable
 from translations.serializers import PhraseSerializer, LanguageSerializer, CategorySerializer, \
     TranslationSerializerMain, ContributorSerializer, UserTypeSerializer, TranslationFeedbackSecureSerializer, \
-    ContactSecureSerializer
+    ContactSecureSerializer, DownloadableSerializer
 
 
 class PhraseViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -71,3 +71,12 @@ class TranslationFeedbackViewsSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
 class ContactViewsSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = ContactSecureSerializer
+
+
+class DownloadableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = DownloadableSerializer
+    queryset = Downloadable.objects.all().select_related('language').order_by('id')
+    pagination_class = PerPage1000
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['name', 'description']
+    filterset_fields = ['language', 'language__name']
