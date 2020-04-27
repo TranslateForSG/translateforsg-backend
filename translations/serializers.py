@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from translations.models import Translation, Language, Phrase, Category, Contributor, UserType, TranslationFeedback, \
-    Contact
+    Contact, Downloadable
 
 
 class TranslationSerializer(serializers.ModelSerializer):
@@ -106,3 +106,9 @@ class ContactSecureSerializer(serializers.Serializer):
         if 'recaptcha' in validated_data:
             validated_data.pop('recaptcha')
         return Contact.objects.create(**validated_data)
+
+
+class DownloadableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Downloadable
+        fields = ['id', 'name', 'description', 'downloadable_file', 'created_at', 'updated_at']
