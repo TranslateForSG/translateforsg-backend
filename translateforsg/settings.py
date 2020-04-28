@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -163,3 +165,14 @@ if not IS_TESTING:
 DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY') if not IS_TESTING else 'test'
 DRF_RECAPTCHA_TESTING = env.bool('DRF_RECAPTCHA_TESTING', default=IS_TESTING)
 DRF_RECAPTCHA_TESTING_PASS = env.bool('DRF_RECAPTCHA_TESTING', default=IS_TESTING)
+
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn=env.str('SENTRY_DSN'),
+        integrations=[DjangoIntegration()],
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )

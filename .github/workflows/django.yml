@@ -52,6 +52,7 @@ jobs:
       env:
         SECRET_KEY: 'X*<]=S=.N5m?Kc6K8bs"7Dfq9>Gk,.8MCQMt!!(TwS#2zWH`4f'
         DATABASE_URL: 'sqlite:///test.sqlite3'
+        DEBUG: 'on'
         TESTING: 1
       run: |
         python manage.py test
