@@ -149,7 +149,10 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'http://translatefor.sg',
+    'https://translatefor.sg',
+]
 
 IS_TESTING = 'TESTING' in os.environ
 
