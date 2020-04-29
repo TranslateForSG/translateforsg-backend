@@ -100,6 +100,7 @@ class Translation(models.Model):
 
     language = models.ForeignKey('Language', on_delete=models.CASCADE)
     content = models.TextField(blank=True)
+    romanized = models.TextField(blank=True)
     audio_clip = models.FileField(
         blank=True,
         help_text='Optional, will be auto generated if not provided.',
@@ -114,7 +115,6 @@ class Translation(models.Model):
         return f'{self.phrase.summary} for {self.language.name}'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-
         self.translate()
         self.synthesize()
 
