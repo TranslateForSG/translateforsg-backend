@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
+from translations.printable import print_category
 from translations.views import PhraseViewSet, LanguageViewSet, CategoryViewSet, TranslationViewSet, ContributorViewSet, \
     UserTypeViewSet, TranslationFeedbackViewsSet, ContactViewsSet, DownloadableViewSet, SectionViewSet
 
@@ -36,7 +37,8 @@ router.register('sections', SectionViewSet, 'section')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls))
+    path('api/v1/', include(router.urls)),
+    path('printables/', print_category)
 ]
 
 if settings.DEBUG:

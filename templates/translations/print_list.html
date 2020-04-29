@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Print</title>
+    <style>
+        body {
+            width: 21cm;
+            height: 29.7cm;
+            margin: 10mm 15mm 10mm 15mm;
+        }
+
+        .list {
+            display: inline-block;
+        }
+
+        .block {
+            display: inline-block;
+            width: 8.5cm;
+            min-height: 3cm;
+            border: 1px black dashed;
+            margin: 0.2cm;
+            padding: 0.5cm;
+            text-align: center;
+        }
+
+        .block .translated-text {
+            font-size: 150%;
+        }
+
+    </style>
+</head>
+<body>
+<div>
+    <h1>&#127480;&#127468; translatefor.sg | {{ language.name }}</h1>
+    <div class="list">
+        {% for translation in filter.qs %}
+            <div class="block">
+                <span class="counter">#{{ forloop.counter }}</span> -
+                <span>
+                    {% for category in translation.phrase.categories.all %}
+                        {{ category.name }}&nbsp;
+                    {% endfor %}
+                </span>
+                <p>{{ translation.phrase.content }}</p>
+                <p class="translated-text">{{ translation.content }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
