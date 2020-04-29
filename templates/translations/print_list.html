@@ -4,30 +4,32 @@
     <meta charset="UTF-8">
     <title>Print</title>
     <style>
-        body {
-            width: 21cm;
-            height: 29.7cm;
-            margin: 10mm 15mm 10mm 15mm;
-        }
+        @media all {
+            body {
+                width: 21cm;
+                height: 29.7cm;
+                margin: 10mm 15mm 10mm 15mm;
+            }
 
-        .list {
-            display: inline-block;
-        }
+            .list {
+                display: table;
+            }
 
-        .block {
-            display: inline-block;
-            width: 8.5cm;
-            min-height: 3cm;
-            border: 1px black dashed;
-            margin: 0.2cm;
-            padding: 0.5cm;
-            text-align: center;
-        }
+            .block {
+                display: inline-block;
+                width: 8.5cm;
+                min-height: 3cm;
+                border: 1px black dashed;
+                margin: 0.2cm;
+                padding: 0.5cm;
+                text-align: center;
+                break-inside: avoid-page !important;
+            }
 
-        .block .translated-text {
-            font-size: 150%;
+            .block .translated-text {
+                font-size: 150%;
+            }
         }
-
     </style>
 </head>
 <body>

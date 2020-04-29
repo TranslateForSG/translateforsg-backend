@@ -9,7 +9,7 @@ def print_category(request: HttpRequest) -> HttpResponse:
     qs = Translation.objects.all() \
         .select_related('phrase') \
         .prefetch_related('phrase__categories') \
-        .order_by('phrase__categories__order', 'phrase__phrasecategory__order')
+        .order_by('phrase__categories__order', 'phrase__order')
 
     context = {
         'filter': TranslationFilterSet(data=request.GET, queryset=qs),
