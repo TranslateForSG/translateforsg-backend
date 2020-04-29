@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, filters
 from rest_framework.exceptions import ValidationError
@@ -25,6 +27,10 @@ class LanguageViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Language.objects.filter(is_active=True).order_by('name')
     pagination_class = PerPage1000
 
+    @method_decorator(cache_page(60 * 60 * 2, key_prefix='languages'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CategorySerializer
@@ -33,6 +39,10 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name']
     filterset_fields = ['intended_for', 'intended_for__name']
+
+    @method_decorator(cache_page(60 * 60 * 2, key_prefix='categories'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -55,14 +65,22 @@ class TranslationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class ContributorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = ContributorSerializer
-    queryset = Contributor.objects.all().order_by('?')
+    queryset = Contributor.objects.all().order_by('name')
     pagination_class = PerPage1000
+
+    @method_decorator(cache_page(60 * 60 * 2, key_prefix='contributors'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class UserTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = UserTypeSerializer
     queryset = UserType.objects.filter(is_active=True).order_by('?')
     pagination_class = PerPage100
+
+    @method_decorator(cache_page(60 * 60 * 2, key_prefix='usertypes'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class TranslationFeedbackViewsSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -88,3 +106,7 @@ class SectionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PerPage1000
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name']
+
+    @method_decorator(cache_page(60 * 60 * 2, key_prefix='sections'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

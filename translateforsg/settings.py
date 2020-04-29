@@ -55,8 +55,11 @@ INSTALLED_APPS = [
     'drf_recaptcha',
     'fsm_admin',
 
-    'translations',
+    'translations.apps.TranslationsConfig',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -68,6 +71,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+    INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'translateforsg.urls'
 
@@ -165,12 +172,17 @@ if not IS_TESTING:
     GS_DEFAULT_ACL = 'publicRead'
     AWS_QUERYSTRING_AUTH = False
 
+    CACHES = {
+        'default': env.cache(default='dummycache://')
+    }
+
+
 DRF_RECAPTCHA_SECRET_KEY = env.str('DRF_RECAPTCHA_SECRET_KEY') if not IS_TESTING else 'test'
 DRF_RECAPTCHA_TESTING = env.bool('DRF_RECAPTCHA_TESTING', default=IS_TESTING)
 DRF_RECAPTCHA_TESTING_PASS = env.bool('DRF_RECAPTCHA_TESTING', default=IS_TESTING)
 
 
-if not DEBUG:
+if not DEBUG and not IS_TESTING:
     sentry_sdk.init(
         dsn=env.str('SENTRY_DSN'),
         integrations=[DjangoIntegration()],
