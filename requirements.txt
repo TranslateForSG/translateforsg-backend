@@ -29,6 +29,9 @@ google-cloud-storage==1.27.0
 google-cloud-texttospeech==1.0.1
 google-cloud-translate==2.0.0
 google-resumable-media==0.5.0
+google-api-python-client==1.8.2
+google-auth-httplib2==0.0.3
+google-auth-oauthlib--0.4.1
 googleapis-common-protos==1.51.0
 googledrivedownloader==0.4
 grpcio==1.28.1

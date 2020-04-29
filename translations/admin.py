@@ -9,7 +9,7 @@ from reversion.admin import VersionAdmin
 
 from .forms import PhraseForm
 from .models import Language, Category, Phrase, Translation, Contributor, PhraseCategory, UserType, TranslationFeedback, \
-    Contact, Downloadable, Section
+    Contact, Downloadable, Section, TranslationImportJob
 
 
 @admin.register(Language)
@@ -163,3 +163,16 @@ class DownloadableAdmin(VersionAdmin):
     list_filter = ['language']
     readonly_fields = ['created_at', 'updated_at']
     search_fields = ['name', 'description']
+
+
+@admin.register(TranslationImportJob)
+class TranslationImportJobAdmin(VersionAdmin):
+    list_display = ['id', 'language', 'status', 'created_at', 'updated_at']
+    list_filter = ['status']
+    ordering = ['-updated_at']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

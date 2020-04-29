@@ -6,6 +6,8 @@ from django.db import models
 from django_fsm import FSMField, transition
 
 from translations.audio_generation import generate_audio_file, generate_translation
+from translations.imports import import_now
+from translations.validators import validate_google_sheet_id
 
 
 class Language(models.Model):
@@ -18,6 +20,10 @@ class Language(models.Model):
                                         help_text='Translation will not be generated if blank')
     speech_code = models.CharField(max_length=10, blank=True, db_index=True,
                                    help_text='Speech will not be generated if blank')
+
+    google_sheet_id = models.CharField(max_length=50, blank=True,
+                                       verbose_name='Google Sheet ID',
+                                       validators=[validate_google_sheet_id])
 
     is_active = models.BooleanField()
 
@@ -43,6 +49,50 @@ class Language(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.translation_code = self.code
         super().save(force_insert, force_update, using, update_fields)
+
+    def import_sheet(self):
+        assert self.google_sheet_id
+
+        job = TranslationImportJob.objects.create(
+            language=self,
+            google_sheet_id=self.google_sheet_id
+        )
+
+        job.start_processing()
+        job.save()
+
+        try:
+            import_now(self.code, self.google_sheet_id)
+        except BaseException as e:
+            job.mark_fail()
+            job.save()
+            raise e
+
+        job.mark_success()
+        job.save()
+
+
+class TranslationImportJob(models.Model):
+    language = models.ForeignKey('Language', on_delete=models.CASCADE)
+    google_sheet_id = models.CharField(max_length=50)
+
+    status = FSMField(default='new')
+    updated_rows = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @transition(field=status, source='new', target='in_progress')
+    def start_processing(self):
+        pass
+
+    @transition(field=status, source='in_progress', target='successful')
+    def mark_success(self):
+        pass
+
+    @transition(field=status, source='in_progress', target='failed')
+    def mark_fail(self):
+        pass
 
 
 class Categorizable(SortableMixin):
